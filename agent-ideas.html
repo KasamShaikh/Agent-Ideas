@@ -1,0 +1,989 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="A catalog of AI agent ideas inspired by the Microsoft Foundry Toolkit for VS Code workshop.">
+  <title>Agent Possibilities | Microsoft Foundry Toolkit</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Manrope:wght@600;700;800&amp;display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink: #08254f;
+      --muted: #53657d;
+      --paper: #fbfcfe;
+      --white: #ffffff;
+      --azure: #0878df;
+      --azure-dark: #0050b8;
+      --teal: #ed1c24;
+      --gold: #ffbd18;
+      --coral: #ff5a18;
+      --line: #dde5ef;
+      --shadow: 0 14px 36px rgba(0, 66, 153, 0.11);
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        linear-gradient(rgba(0, 80, 184, 0.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 80, 184, 0.035) 1px, transparent 1px),
+        var(--paper);
+      background-size: 28px 28px;
+      font-family: "DM Sans", sans-serif;
+    }
+
+    button, input { font: inherit; }
+
+    .hero {
+      position: relative;
+      min-height: min(78vh, 720px);
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+      color: var(--ink);
+      background:
+        linear-gradient(90deg, #ffffff 0%, rgba(255, 255, 255, 0.98) 38%, rgba(255, 255, 255, 0.78) 54%, rgba(255, 255, 255, 0.08) 72%),
+        url("logo.png") right center / auto 100% no-repeat,
+        var(--white);
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      inset: auto 0 0;
+      height: 7px;
+      background: linear-gradient(90deg, var(--azure) 0 28%, var(--gold) 28% 48%, var(--coral) 48% 70%, var(--teal) 70% 86%, var(--azure-dark) 86%);
+    }
+
+    .hero-inner {
+      position: relative;
+      z-index: 1;
+      width: min(1180px, calc(100% - 40px));
+      margin: 0 auto;
+      padding: 58px 0 62px;
+    }
+
+    .hero-content { position: relative; z-index: 1; max-width: 650px; }
+
+    .eyebrow {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 0 0 18px;
+      color: var(--azure-dark);
+      font-size: 0.82rem;
+      font-weight: 700;
+      letter-spacing: 0;
+      text-transform: uppercase;
+    }
+
+    .eyebrow::before {
+      width: 30px;
+      height: 3px;
+      content: "";
+      background: var(--coral);
+    }
+
+    h1, h2, h3 { font-family: "Manrope", sans-serif; }
+
+    h1 {
+      max-width: 780px;
+      margin: 0;
+      font-size: clamp(2.7rem, 6vw, 5.7rem);
+      line-height: 0.98;
+      letter-spacing: 0;
+    }
+
+    h1::first-line { color: var(--azure-dark); }
+
+    .hero-copy {
+      max-width: 680px;
+      margin: 28px 0 0;
+      color: var(--muted);
+      font-size: clamp(1rem, 2vw, 1.22rem);
+      line-height: 1.65;
+    }
+
+    .hero-stats {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 24px;
+      margin-top: 36px;
+    }
+
+    .stat {
+      min-width: 126px;
+      padding-left: 15px;
+      border-left: 3px solid var(--azure);
+    }
+
+    .stat strong {
+      display: block;
+      font-family: "Manrope", sans-serif;
+      font-size: 1.6rem;
+      color: var(--azure-dark);
+    }
+
+    .stat:nth-child(2) { border-left-color: var(--coral); }
+    .stat:nth-child(2) strong { color: var(--coral); }
+    .stat:nth-child(3) { border-left-color: var(--gold); }
+    .stat:nth-child(3) strong { color: #b87500; }
+    .stat span { color: var(--muted); font-size: 0.83rem; }
+
+    main {
+      width: min(1180px, calc(100% - 40px));
+      margin: 0 auto;
+    }
+
+    .foundation {
+      display: grid;
+      grid-template-columns: 0.75fr 1.25fr;
+      gap: 46px;
+      padding: 72px 0 60px;
+      align-items: start;
+    }
+
+    .section-kicker {
+      margin: 0 0 10px;
+      color: var(--azure-dark);
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    h2 {
+      margin: 0;
+      font-size: clamp(1.9rem, 4vw, 3rem);
+      line-height: 1.1;
+      letter-spacing: 0;
+    }
+
+    .foundation-copy {
+      margin: 18px 0 0;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .patterns {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+
+    .pattern {
+      min-height: 210px;
+      padding: 25px;
+      color: var(--white);
+      background: linear-gradient(145deg, var(--azure) 0%, var(--azure-dark) 100%);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+    }
+
+    .pattern:nth-child(2) { background: linear-gradient(145deg, var(--coral) 0%, var(--teal) 100%); }
+
+    .pattern-number {
+      display: inline-grid;
+      width: 38px;
+      height: 38px;
+      place-items: center;
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      border-radius: 50%;
+      font-weight: 700;
+    }
+
+    .pattern h3 { margin: 24px 0 8px; font-size: 1.15rem; }
+    .pattern p { margin: 0; color: rgba(255, 255, 255, 0.82); line-height: 1.55; }
+
+    .catalog { padding: 30px 0 90px; }
+
+    .catalog-head {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 24px;
+      margin-bottom: 28px;
+    }
+
+    .result-count { margin: 0 0 4px; color: var(--muted); white-space: nowrap; }
+
+    .controls {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      padding: 15px 0;
+      background: rgba(251, 252, 254, 0.94);
+      backdrop-filter: blur(12px);
+    }
+
+    .search-wrap { position: relative; }
+
+    .search-icon {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      width: 20px;
+      height: 20px;
+      transform: translateY(-50%);
+      color: var(--muted);
+      pointer-events: none;
+    }
+
+    #search {
+      width: 100%;
+      min-height: 50px;
+      padding: 12px 16px 12px 48px;
+      color: var(--ink);
+      background: var(--white);
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      outline: none;
+      box-shadow: 0 4px 18px rgba(0, 80, 184, 0.07);
+    }
+
+    #search:focus { border-color: var(--azure); box-shadow: 0 0 0 3px rgba(8, 120, 223, 0.15); }
+
+    .filters {
+      display: flex;
+      gap: 8px;
+      padding: 12px 0 2px;
+      overflow-x: auto;
+      scrollbar-width: thin;
+    }
+
+    .filter {
+      flex: 0 0 auto;
+      padding: 8px 13px;
+      color: var(--muted);
+      background: var(--white);
+      border: 1px solid var(--line);
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .filter:hover, .filter.active {
+      color: var(--white);
+      background: var(--azure);
+      border-color: var(--azure);
+    }
+
+    .agent-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+      padding-top: 22px;
+    }
+
+    .agent-card {
+      position: relative;
+      width: 100%;
+      min-height: 215px;
+      padding: 24px;
+      overflow: hidden;
+      color: var(--ink);
+      background: var(--white);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: 0 7px 22px rgba(0, 80, 184, 0.065);
+      animation: reveal 0.45s both;
+      appearance: none;
+      font: inherit;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .agent-card::before {
+      position: absolute;
+      inset: 0 auto 0 0;
+      width: 4px;
+      content: "";
+      background: var(--card-color, var(--azure));
+    }
+
+    .agent-card:hover { transform: translateY(-3px); border-color: var(--card-color, var(--azure)); box-shadow: var(--shadow); transition: 180ms ease; }
+    .agent-card:focus-visible { outline: 3px solid rgba(8, 120, 223, 0.3); outline-offset: 3px; }
+
+    .card-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+
+    .agent-number {
+      color: var(--card-color, var(--azure));
+      font-family: "Manrope", sans-serif;
+      font-size: 0.85rem;
+      font-weight: 800;
+    }
+
+    .badge {
+      padding: 5px 8px;
+      color: var(--muted);
+      background: #f0f5fb;
+      border-radius: 4px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .agent-card h3 { margin: 30px 0 10px; font-size: 1.08rem; line-height: 1.3; }
+    .agent-card p { margin: 0; color: var(--muted); font-size: 0.92rem; line-height: 1.6; }
+    .card-action { display: block; margin-top: 20px; color: var(--card-color, var(--azure)); font-size: 0.78rem; font-weight: 800; text-transform: uppercase; }
+    .agent-card[data-category="Career"] { --card-color: var(--azure); }
+    .agent-card[data-category="Engineering"] { --card-color: var(--teal); }
+    .agent-card[data-category="Business"] { --card-color: var(--gold); }
+    .agent-card[data-category="Operations"] { --card-color: var(--coral); }
+    .agent-card[data-category="Knowledge"] { --card-color: var(--azure-dark); }
+    .agent-card.hidden { display: none; }
+
+    .empty-state {
+      display: none;
+      padding: 70px 20px;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    .page-tabs {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      display: flex;
+      gap: 6px;
+      padding: 14px 0;
+      background: rgba(251, 252, 254, 0.96);
+      border-bottom: 1px solid var(--line);
+      backdrop-filter: blur(12px);
+    }
+
+    .page-tab {
+      min-height: 42px;
+      padding: 9px 16px;
+      color: var(--muted);
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: 5px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .page-tab:hover { color: var(--azure-dark); background: var(--white); border-color: var(--line); }
+    .page-tab[aria-selected="true"] { color: var(--white); background: var(--azure-dark); }
+    .tab-panel[hidden] { display: none; }
+    .guide { padding: 58px 0 90px; }
+    .guide p { color: var(--muted); line-height: 1.7; }
+
+    .guide-intro {
+      display: grid;
+      grid-template-columns: minmax(0, 1.35fr) minmax(280px, 0.65fr);
+      gap: 48px;
+      align-items: start;
+      padding-bottom: 44px;
+    }
+
+    .guide-intro p { max-width: 730px; }
+    .guide-facts { display: grid; grid-template-columns: repeat(2, 1fr); border-top: 5px solid var(--azure); background: var(--white); box-shadow: var(--shadow); }
+    .guide-fact { min-height: 98px; padding: 18px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+    .guide-fact:nth-child(even) { border-right: 0; }
+    .guide-fact strong { display: block; color: var(--azure-dark); font-family: "Manrope", sans-serif; font-size: 1.2rem; }
+    .guide-fact span { display: block; margin-top: 4px; color: var(--muted); font-size: 0.8rem; }
+
+    .notice { margin: 18px 0 30px; padding: 18px 20px; color: #5f3d00; background: #fff8df; border-left: 5px solid var(--gold); line-height: 1.6; }
+    .notice strong { color: #805300; }
+    .notice.danger { color: #6b2424; background: #fff1ef; border-left-color: var(--teal); }
+    .notice.danger strong { color: #9d171d; }
+
+    .workflow-strip { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin: 26px 0 14px; }
+    .workflow-node { min-height: 126px; padding: 19px; color: var(--white); background: var(--azure); border-radius: 6px; }
+    .workflow-node:nth-child(2) { background: var(--azure-dark); }
+    .workflow-node:nth-child(3) { background: var(--coral); }
+    .workflow-node:nth-child(4) { background: var(--teal); }
+    .workflow-node strong { display: block; margin-bottom: 7px; font-family: "Manrope", sans-serif; font-size: 0.94rem; }
+    .workflow-node span { color: rgba(255, 255, 255, 0.84); font-size: 0.8rem; line-height: 1.45; }
+
+    .guide-block { padding: 46px 0; border-top: 1px solid var(--line); }
+    .guide-block-head { display: grid; grid-template-columns: 72px 1fr; gap: 20px; align-items: start; }
+    .step-number { display: grid; width: 58px; height: 58px; place-items: center; color: var(--white); background: var(--azure-dark); border-radius: 6px; font-family: "Manrope", sans-serif; font-size: 1.2rem; font-weight: 800; }
+    .guide-block h3 { margin: 0; font-size: 1.35rem; }
+    .guide-block h4 { margin: 28px 0 8px; color: var(--azure-dark); font-family: "Manrope", sans-serif; font-size: 1rem; }
+    .guide-block p, .guide-block li { color: var(--muted); line-height: 1.65; }
+    .guide-block ol, .guide-block ul { margin: 14px 0 0; padding-left: 22px; }
+    .guide-block li + li { margin-top: 8px; }
+    .guide-body { margin-left: 92px; }
+
+    .check-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px 28px; margin-top: 20px; padding: 0; list-style: none; }
+    .check-grid li { position: relative; margin: 0; padding-left: 27px; }
+    .check-grid li::before { position: absolute; left: 0; top: 2px; color: var(--azure); content: "□"; font-size: 1.18rem; font-weight: 700; }
+
+    .code-block { margin: 14px 0 18px; padding: 18px 20px; overflow-x: auto; color: #edf6ff; background: #08254f; border-left: 5px solid var(--coral); border-radius: 5px; font: 0.86rem/1.65 Consolas, "Courier New", monospace; white-space: pre; }
+    .test-prompt { margin-top: 16px; padding: 20px; color: var(--ink); background: var(--white); border: 1px solid var(--line); border-left: 5px solid var(--gold); font: 0.84rem/1.6 Consolas, "Courier New", monospace; white-space: pre-wrap; }
+
+    .time-plan { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 22px; }
+    .time-slot { padding: 16px; background: var(--white); border-top: 4px solid var(--azure); box-shadow: 0 6px 18px rgba(0, 80, 184, 0.07); }
+    .time-slot:nth-child(2) { border-top-color: var(--gold); }
+    .time-slot:nth-child(3) { border-top-color: var(--coral); }
+    .time-slot:nth-child(4) { border-top-color: var(--teal); }
+    .time-slot strong { display: block; color: var(--ink); font-size: 0.88rem; }
+    .time-slot span { display: block; margin-top: 6px; color: var(--muted); font-size: 0.78rem; line-height: 1.45; }
+
+    .simple-table { width: 100%; margin-top: 18px; border-collapse: collapse; background: var(--white); }
+    .simple-table th, .simple-table td { padding: 13px 14px; border: 1px solid var(--line); text-align: left; vertical-align: top; }
+    .simple-table th { color: var(--white); background: var(--azure-dark); font-size: 0.82rem; }
+    .simple-table td { color: var(--muted); font-size: 0.84rem; line-height: 1.5; }
+
+    .resource-links { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; }
+    .resource-links a { padding: 9px 12px; color: var(--azure-dark); background: var(--white); border: 1px solid var(--line); border-radius: 5px; font-size: 0.82rem; font-weight: 700; text-decoration: none; }
+    .resource-links a:hover { color: var(--white); background: var(--azure-dark); border-color: var(--azure-dark); }
+    details.guide-help { margin-top: 12px; background: var(--white); border: 1px solid var(--line); }
+    details.guide-help summary { padding: 14px 16px; color: var(--ink); font-weight: 700; cursor: pointer; }
+    details.guide-help div { padding: 0 16px 16px; color: var(--muted); line-height: 1.6; }
+
+    footer {
+      padding: 34px 20px;
+      color: var(--muted);
+      background:
+        linear-gradient(90deg, var(--azure) 0 22%, var(--gold) 22% 39%, var(--coral) 39% 61%, var(--teal) 61% 78%, var(--azure-dark) 78%) top / 100% 6px no-repeat,
+        var(--white);
+      border-top: 1px solid var(--line);
+      text-align: center;
+    }
+
+    footer strong { color: var(--azure-dark); }
+
+    @keyframes reveal {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 920px) {
+      .hero {
+        background:
+          linear-gradient(90deg, #ffffff 0%, rgba(255, 255, 255, 0.96) 55%, rgba(255, 255, 255, 0.28) 100%),
+          url("logo.png") calc(100% + 120px) center / auto 100% no-repeat,
+          var(--white);
+      }
+      .hero-content { max-width: 540px; }
+      .foundation { grid-template-columns: 1fr; gap: 30px; }
+      .agent-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .guide-intro { grid-template-columns: 1fr; gap: 26px; }
+      .workflow-strip, .time-plan { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 620px) {
+      .hero {
+        min-height: 790px;
+        align-items: flex-start;
+        background:
+          linear-gradient(180deg, #ffffff 0%, #ffffff 52%, rgba(255, 255, 255, 0.3) 68%, rgba(255, 255, 255, 0) 100%),
+          url("logo.png") center bottom / 100% auto no-repeat,
+          var(--white);
+      }
+      .hero-inner, main { width: min(100% - 28px, 1180px); }
+      .hero-inner { padding: 48px 0 330px; }
+      h1 { font-size: 2.75rem; }
+      .hero-stats { gap: 16px; }
+      .stat { min-width: 100px; }
+      .foundation { padding-top: 52px; }
+      .patterns, .agent-grid { grid-template-columns: 1fr; }
+      .catalog-head { align-items: start; flex-direction: column; }
+      .controls { top: 0; }
+      .agent-card { min-height: 190px; }
+      .page-tabs { overflow-x: auto; }
+      .page-tab { flex: 0 0 auto; }
+      .guide { padding-top: 42px; }
+      .workflow-strip, .time-plan, .check-grid { grid-template-columns: 1fr; }
+      .guide-block-head { grid-template-columns: 48px 1fr; gap: 14px; }
+      .step-number { width: 44px; height: 44px; font-size: 1rem; }
+      .guide-body { margin-left: 62px; }
+      .simple-table { display: block; overflow-x: auto; white-space: nowrap; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; animation: none !important; transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <header class="hero">
+    <div class="hero-inner">
+      <div class="hero-content">
+        <p class="eyebrow">Microsoft Foundry Toolkit for VS Code</p>
+        <h1>Agent possibilities, built from one workshop.</h1>
+        <p class="hero-copy">A practical idea catalog derived from the repository's hosted single-agent pattern, sequential multi-agent workflows, Python tools, and MCP integrations.</p>
+        <div class="hero-stats" aria-label="Catalog summary">
+          <div class="stat"><strong>40</strong><span>Agent ideas</span></div>
+          <div class="stat"><strong>5</strong><span>Categories</span></div>
+          <div class="stat"><strong>2</strong><span>Core patterns</span></div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <nav class="page-tabs" role="tablist" aria-label="Page sections">
+      <button class="page-tab" type="button" role="tab" id="ideasTab" aria-controls="ideasPanel" aria-selected="true">40 agent ideas</button>
+      <button class="page-tab" type="button" role="tab" id="buildTab" aria-controls="buildPanel" aria-selected="false">Build: Resume–Job Fit</button>
+    </nav>
+
+    <div class="tab-panel" id="ideasPanel" role="tabpanel" aria-labelledby="ideasTab">
+    <section class="foundation" aria-labelledby="foundation-title">
+      <div>
+        <p class="section-kicker">Repository foundation</p>
+        <h2 id="foundation-title">Two patterns, many useful outcomes</h2>
+        <p class="foundation-copy">The workshop demonstrates the complete hosted-agent lifecycle in VS Code: scaffold, configure, test locally, deploy to Microsoft Foundry, and verify in the playground.</p>
+      </div>
+      <div class="patterns">
+        <article class="pattern">
+          <span class="pattern-number">01</span>
+          <h3>Focused hosted agent</h3>
+          <p>One clearly instructed agent, optionally equipped with Python tools, served through the Responses protocol.</p>
+        </article>
+        <article class="pattern">
+          <span class="pattern-number">02</span>
+          <h3>Sequential specialist workflow</h3>
+          <p>Specialized agents pass structured context through a Parse → Analyze → Score → Recommend pipeline, with optional MCP grounding.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="catalog" aria-labelledby="catalog-title">
+      <div class="catalog-head">
+        <div>
+          <p class="section-kicker">Idea catalog</p>
+          <h2 id="catalog-title">What could you build?</h2>
+        </div>
+        <p class="result-count" id="resultCount" aria-live="polite">Showing 40 ideas</p>
+      </div>
+
+      <div class="controls">
+        <div class="search-wrap">
+          <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg>
+          <input id="search" type="search" placeholder="Search agent ideas..." aria-label="Search agent ideas">
+        </div>
+        <div class="filters" role="group" aria-label="Filter ideas by category">
+          <button class="filter active" type="button" data-filter="All">All</button>
+          <button class="filter" type="button" data-filter="Career">Career</button>
+          <button class="filter" type="button" data-filter="Engineering">Engineering</button>
+          <button class="filter" type="button" data-filter="Business">Business</button>
+          <button class="filter" type="button" data-filter="Operations">Operations</button>
+          <button class="filter" type="button" data-filter="Knowledge">Knowledge</button>
+        </div>
+      </div>
+
+      <div class="agent-grid" id="agentGrid"></div>
+      <div class="empty-state" id="emptyState">No agent ideas match that search.</div>
+    </section>
+    </div>
+
+    <section class="tab-panel guide" id="buildPanel" role="tabpanel" aria-labelledby="buildTab" hidden>
+      <div class="guide-intro">
+        <div>
+          <p class="section-kicker">Beginner build guide</p>
+          <h2>Resume–Job Fit Workflow</h2>
+          <p>Start with only an Azure subscription and the workshop repository. By the end, four agents will read a resume, understand a job description, calculate a fit score, and create a learning roadmap with Microsoft Learn links.</p>
+        </div>
+        <div class="guide-facts" aria-label="Guide summary">
+          <div class="guide-fact"><strong>4</strong><span>Specialist agents</span></div>
+          <div class="guide-fact"><strong>~2 hours</strong><span>Beginner workshop</span></div>
+          <div class="guide-fact"><strong>Python</strong><span>Agent Framework</span></div>
+          <div class="guide-fact"><strong>Responses</strong><span>Hosted protocol</span></div>
+        </div>
+      </div>
+
+      <div class="notice danger"><strong>Workshop safety:</strong> Hosted Agents are a preview feature and Azure usage can create charges. Use the sample resume below, not a real resume with personal information. Delete workshop resources when they are no longer needed.</div>
+
+      <section class="guide-block" aria-labelledby="guide-flow">
+        <div class="guide-block-head"><span class="step-number">01</span><div><h3 id="guide-flow">Understand what you are building</h3><p>This is one hosted application containing four agents. Each agent receives the previous agent's output, so the order matters.</p></div></div>
+        <div class="guide-body">
+          <div class="workflow-strip" aria-label="Four-agent sequential workflow">
+            <div class="workflow-node"><strong>Resume Parser</strong><span>Structures the resume and carries the full job description forward.</span></div>
+            <div class="workflow-node"><strong>JD Analyst</strong><span>Extracts required and preferred skills and carries the resume forward.</span></div>
+            <div class="workflow-node"><strong>Matching Agent</strong><span>Compares both profiles and calculates a score out of 100.</span></div>
+            <div class="workflow-node"><strong>Gap Analyzer</strong><span>Builds the roadmap and finds Microsoft Learn resources through MCP.</span></div>
+          </div>
+          <p>The repository already contains the complete working code. For a two-hour beginner session, use the reference implementation directly instead of rebuilding all four prompts.</p>
+        </div>
+      </section>
+
+      <section class="guide-block" aria-labelledby="guide-tools">
+        <div class="guide-block-head"><span class="step-number">02</span><div><h3 id="guide-tools">Install and check the required tools</h3><p>Complete these checks before starting the two-hour build timer.</p></div></div>
+        <div class="guide-body">
+          <ul class="check-grid"><li>Latest Visual Studio Code</li><li>Git</li><li>Python 3.13 recommended</li><li>Azure CLI 2.80 or later</li><li>Foundry Toolkit for VS Code</li><li>Python extension for VS Code</li></ul>
+          <h4>Install the extensions</h4>
+          <ol><li>Open VS Code and press <strong>Ctrl+Shift+X</strong>.</li><li>Install <strong>Foundry Toolkit for VS Code</strong> by Microsoft.</li><li>Install <strong>Python</strong> by Microsoft.</li><li>Run <strong>Developer: Reload Window</strong> from the Command Palette.</li></ol>
+          <h4>Verify in a new PowerShell terminal</h4>
+          <pre class="code-block">git --version
+python --version
+az --version</pre>
+          <p>Stop and fix any command that is not recognized. On Windows, reinstall Python with <strong>Add Python to PATH</strong> selected.</p>
+        </div>
+      </section>
+
+      <section class="guide-block" aria-labelledby="guide-code">
+        <div class="guide-block-head"><span class="step-number">03</span><div><h3 id="guide-code">Clone the repo and open the ready solution</h3><p>Use the completed Lab 02 implementation so your time is spent learning and deploying the workflow.</p></div></div>
+        <div class="guide-body">
+          <pre class="code-block">git clone https://github.com/microsoft-foundry/Foundry_Toolkit_for_VSCode_Lab.git
+cd Foundry_Toolkit_for_VSCode_Lab\workshop\lab02-multi-agent\PersonalCareerCopilot
+code .</pre>
+          <p>A new VS Code window should open with <strong>main.py</strong>, <strong>agent.yaml</strong>, <strong>Dockerfile</strong>, and <strong>requirements.txt</strong> at the root.</p>
+          <div class="notice"><strong>Important:</strong> Open the PersonalCareerCopilot folder itself. Otherwise the included F5 and task configurations may not be found.</div>
+        </div>
+      </section>
+
+      <section class="guide-block" aria-labelledby="guide-azure">
+        <div class="guide-block-head"><span class="step-number">04</span><div><h3 id="guide-azure">Sign in and choose the Azure subscription</h3><p>The code uses Microsoft Entra authentication through DefaultAzureCredential. No API key is needed.</p></div></div>
+        <div class="guide-body">
+          <pre class="code-block">az login
+az account list --output table
+az account set --subscription "&lt;your subscription name or ID&gt;"
+az account show --query "{name:name, id:id}" --output table</pre>
+          <ol><li>Sign in with the account that can access the subscription.</li><li>In VS Code, click the Accounts icon and sign in to Microsoft Foundry if prompted.</li><li>Confirm the final command shows the subscription you intend to use.</li></ol>
+        </div>
+      </section>
+
+      <section class="guide-block" aria-labelledby="guide-project">
+        <div class="guide-block-head"><span class="step-number">05</span><div><h3 id="guide-project">Create a Microsoft Foundry project</h3><p>This cloud project will hold your model and hosted workflow.</p></div></div>
+        <div class="guide-body">
+          <ol><li>Press <strong>Ctrl+Shift+P</strong> and run <strong>Foundry Toolkit: Create Project</strong>.</li><li>Select your Azure subscription.</li><li>Create a dedicated resource group such as <strong>rg-construct-agent-lab</strong>.</li><li>Select a region the wizard shows as supporting Hosted Agents and your model.</li><li>Enter a project name such as <strong>construct-career-lab</strong>.</li><li>Wait until the project appears under <strong>My Resources</strong> in the Toolkit sidebar.</li></ol>
+          <div class="notice"><strong>Permission check:</strong> Project creation normally requires Owner-level permission on the resource group. If blocked, ask the subscription owner to create the project or grant the required role.</div>
+        </div>
+      </section>
+
+      <section class="guide-block" aria-labelledby="guide-model">
+        <div class="guide-block-head"><span class="step-number">06</span><div><h3 id="guide-model">Deploy a chat model</h3><p>All four agents share one model deployment.</p></div></div>
+        <div class="guide-body">
+          <ol><li>Run <strong>Foundry Toolkit: Open Model Catalog</strong>.</li><li>Select a small chat-capable model available in your project and region. A <strong>mini</strong> model is usually best for workshop speed and cost.</li><li>Click <strong>Deploy</strong>, choose your project, and use an option with available quota.</li><li>Wait for status <strong>Succeeded</strong>.</li><li>Write down the exact <strong>deployment name</strong>.</li></ol>
+          <p>The repo uses <strong>gpt-4.1-mini</strong> as an example. Do not force that name if it is unavailable; use the exact deployment name shown in your project.</p>
+        </div>
+      </section>
+
+      <section class="guide-block" aria-labelledby="guide-rbac">
+        <div class="guide-block-head"><span class="step-number">07</span><div><h3 id="guide-rbac">Verify your Foundry permissions</h3><p>Azure Contributor alone does not grant the data permissions needed to build agents.</p></div></div>
+        <div class="guide-body">
+          <ol><li>Open the Foundry resource in the Azure portal.</li><li>Open <strong>Access control (IAM)</strong> → <strong>View my access</strong>.</li><li>For local development, confirm <strong>Foundry User</strong> or higher.</li><li>For hosted deployment, confirm <strong>Foundry Project Manager</strong> or <strong>Foundry Owner</strong>.</li><li>Allow a few minutes for new role assignments to propagate.</li></ol>
+          <div class="notice"><strong>Renamed roles:</strong> Some screens may still show Azure AI User, Azure AI Project Manager, or Azure AI Owner. Their role IDs and core permissions are unchanged.</div>
+        </div>
+      </section>
+
+      <section class="guide-block" aria-labelledby="guide-python">
+        <div class="guide-block-head"><span class="step-number">08</span><div><h3 id="guide-python">Create the Python environment</h3><p>Run these commands from the PersonalCareerCopilot folder.</p></div></div>
+        <div class="guide-body">
+          <pre class="code-block">python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install --upgrade pip
+pip install -r requirements.txt</pre>
+          <p>Your prompt should begin with <strong>(.venv)</strong>. Verify the packages:</p>
+          <pre class="code-block">pip list | Select-String "agent-framework|mcp|debugpy"</pre>
+          <details class="guide-help"><summary>PowerShell blocks Activate.ps1</summary><div>Run <strong>Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass</strong>, then activate again. This changes policy only for the current terminal.</div></details>
+        </div>
+      </section>
+
+      <section class="guide-block" aria-labelledby="guide-env">
+        <div class="guide-block-head"><span class="step-number">09</span><div><h3 id="guide-env">Create the local .env file</h3><p>This connects the local workflow to your Foundry project and model.</p></div></div>
+        <div class="guide-body">
+          <ol><li>Create <strong>.env</strong> beside <strong>main.py</strong>.</li><li>In the Toolkit sidebar, right-click your project and choose <strong>Copy Project Endpoint</strong>.</li><li>Add the endpoint and exact deployment name:</li></ol>
+          <pre class="code-block">FOUNDRY_PROJECT_ENDPOINT=https://&lt;account&gt;.services.ai.azure.com/api/projects/&lt;project&gt;
+AZURE_AI_MODEL_DEPLOYMENT_NAME=&lt;your exact deployment name&gt;</pre>
+          <div class="notice danger"><strong>Do not commit .env:</strong> Never paste Azure keys or passwords into this project. This lab uses your Microsoft Entra sign-in.</div>
+        </div>
+      </section>
+
+      <section class="guide-block" aria-labelledby="guide-review">
+        <div class="guide-block-head"><span class="step-number">10</span><div><h3 id="guide-review">Review the workflow code</h3><p>You do not need to rewrite it, but confirm these parts in main.py.</p></div></div>
+        <div class="guide-body">
+          <ul class="check-grid"><li>Four instruction constants</li><li>Four agents share one FoundryChatClient</li><li>Four executors use last_agent context</li><li>GapAnalyzer has the Learn MCP tool</li><li>Three edges form one straight chain</li><li>ResponsesHostServer starts the workflow</li></ul>
+          <pre class="code-block">ResumeParser → JobDescriptionAgent → MatchingAgent → GapAnalyzer</pre>
+          <p>Do not add a shortcut edge from ResumeParser to MatchingAgent. It can make the response run twice.</p>
+        </div>
+      </section>
+
+      <section class="guide-block" aria-labelledby="guide-local">
+        <div class="guide-block-head"><span class="step-number">11</span><div><h3 id="guide-local">Run and test locally</h3><p>Always pass the local test before deploying.</p></div></div>
+        <div class="guide-body">
+          <ol><li>Press <strong>F5</strong> and select <strong>Debug Local Agent HTTP Server</strong>, or run <strong>Tasks: Run Task</strong> → <strong>Run Agent HTTP Server</strong>.</li><li>Wait for the server on <strong>http://localhost:8088</strong>.</li><li>Run <strong>Foundry Toolkit: Open Agent Inspector</strong>.</li><li>Paste this sample and select Send:</li></ol>
+          <pre class="test-prompt">Resume:
+Jane Doe
+Senior Software Engineer with 5 years of Python, Django, and AWS experience.
+Built microservices and led a team of 4 developers.
+Certification: AWS Solutions Architect Associate.
+
+Job Description:
+Senior Cloud Engineer.
+Required: Python, Azure, Kubernetes, Terraform, and CI/CD.
+Preferred: Go, Prometheus, Grafana, and cost optimization.
+Experience: 5+ years in cloud infrastructure.
+Certification: Azure Solutions Architect Expert preferred.</pre>
+          <h4>Pass conditions</h4>
+          <ul class="check-grid"><li>Fit score out of 100</li><li>Matched and missing skills</li><li>One card for each important gap</li><li>Microsoft Learn URLs</li><li>No Python stack trace</li><li>One response, not a duplicate</li></ul>
+        </div>
+      </section>
+
+      <section class="guide-block" aria-labelledby="guide-deploy">
+        <div class="guide-block-head"><span class="step-number">12</span><div><h3 id="guide-deploy">Deploy the hosted workflow</h3><p>Foundry deploys the four-agent workflow as one hosted agent.</p></div></div>
+        <div class="guide-body">
+          <ol><li>Stop the local test with <strong>Shift+F5</strong> after it passes.</li><li>Run <strong>Foundry Toolkit: Deploy Hosted Agent</strong>.</li><li>Select the same project and the PersonalCareerCopilot source.</li><li>If asked, choose <strong>Code</strong> deployment and <strong>Remote</strong> package mode. This avoids requiring local Docker.</li><li>Review the model variable and chargeable resources.</li><li>Select <strong>Deploy</strong> and wait for <strong>Active</strong>, <strong>Started</strong>, or <strong>Running</strong>.</li></ol>
+          <p>The first deployment can take several minutes. Do not restart it while its status is Creating unless the logs show an error.</p>
+        </div>
+      </section>
+
+      <section class="guide-block" aria-labelledby="guide-verify">
+        <div class="guide-block-head"><span class="step-number">13</span><div><h3 id="guide-verify">Verify in the hosted Playground</h3><p>A local success does not prove cloud identity and settings are correct.</p></div></div>
+        <div class="guide-body">
+          <ol><li>Expand <strong>Hosted Agents</strong> in the Toolkit sidebar.</li><li>Select your agent and active version.</li><li>Open <strong>Playground</strong>.</li><li>Send the same sample again.</li><li>Compare structure, not exact wording.</li></ol>
+          <table class="simple-table"><thead><tr><th>Check</th><th>Pass condition</th></tr></thead><tbody><tr><td>Coordination</td><td>Fit score and roadmap are both present.</td></tr><tr><td>Scoring</td><td>The score uses a 100-point evidence-based breakdown.</td></tr><tr><td>MCP</td><td>Gap cards contain learn.microsoft.com links.</td></tr><tr><td>Health</td><td>No empty response, HTTP 500, authorization error, or timeout.</td></tr></tbody></table>
+        </div>
+      </section>
+
+      <section class="guide-block" aria-labelledby="guide-time">
+        <div class="guide-block-head"><span class="step-number">14</span><div><h3 id="guide-time">Use this two-hour plan</h3><p>Install the tools before the event whenever possible.</p></div></div>
+        <div class="guide-body"><div class="time-plan"><div class="time-slot"><strong>0–30 minutes</strong><span>Sign in, create project, deploy model, verify roles.</span></div><div class="time-slot"><strong>30–55 minutes</strong><span>Clone, open solution, create venv, install packages.</span></div><div class="time-slot"><strong>55–90 minutes</strong><span>Create .env, review chain, run locally, fix issues.</span></div><div class="time-slot"><strong>90–120 minutes</strong><span>Deploy, wait for Active, run hosted test.</span></div></div></div>
+      </section>
+
+      <section class="guide-block" aria-labelledby="guide-fixes">
+        <div class="guide-block-head"><span class="step-number">15</span><div><h3 id="guide-fixes">Fix common problems</h3><p>Read the complete error before changing anything.</p></div></div>
+        <div class="guide-body">
+          <details class="guide-help"><summary>python or az is not recognized</summary><div>Restart VS Code after installation. For Python, reinstall it with Add Python to PATH selected.</div></details>
+          <details class="guide-help"><summary>ModuleNotFoundError: agent_framework</summary><div>Activate .venv and run <strong>pip install -r requirements.txt</strong> again.</div></details>
+          <details class="guide-help"><summary>FOUNDRY_PROJECT_ENDPOINT is missing</summary><div>Put .env beside main.py and spell both variable names exactly as shown in Step 9.</div></details>
+          <details class="guide-help"><summary>403 Forbidden or AuthorizationFailed</summary><div>Verify Foundry User for development and Foundry Project Manager or higher for deployment. Wait after a new role assignment, then sign in again.</div></details>
+          <details class="guide-help"><summary>Model or deployment not found</summary><div>Use the exact deployment name from your project's Models or Deployments view.</div></details>
+          <details class="guide-help"><summary>No Microsoft Learn links</summary><div>Confirm internet access to https://learn.microsoft.com/api/mcp.</div></details>
+          <details class="guide-help"><summary>The response appears twice</summary><div>Keep only the three sequential edges. Remove any shortcut or fan-in edge.</div></details>
+          <details class="guide-help"><summary>Port 8088 is already in use</summary><div>Stop the previous agent with Shift+F5 or close its terminal, then retry.</div></details>
+        </div>
+      </section>
+
+      <section class="guide-block" aria-labelledby="guide-cleanup">
+        <div class="guide-block-head"><span class="step-number">16</span><div><h3 id="guide-cleanup">Finish and clean up safely</h3><p>Model usage and hosted runtime sessions can generate Azure charges.</p></div></div>
+        <div class="guide-body">
+          <ul class="check-grid"><li>Local sample passed</li><li>Hosted sample passed</li><li>Fit score and roadmap present</li><li>Microsoft Learn links present</li><li>No real personal resume uploaded</li><li>Unused resources reviewed</li></ul>
+          <div class="notice danger"><strong>Before deleting:</strong> Confirm the resource group contains only workshop resources. Deleting it permanently removes everything inside.</div>
+          <div class="resource-links"><a href="https://github.com/microsoft-foundry/Foundry_Toolkit_for_VSCode_Lab/tree/main/workshop/lab02-multi-agent" target="_blank" rel="noopener">Lab 02 repository</a><a href="https://github.com/microsoft-foundry/Foundry_Toolkit_for_VSCode_Lab/tree/main/workshop/lab02-multi-agent/PersonalCareerCopilot" target="_blank" rel="noopener">Reference solution</a><a href="https://learn.microsoft.com/azure/foundry/agents/quickstarts/quickstart-hosted-agent" target="_blank" rel="noopener">Hosted Agent quickstart</a><a href="https://learn.microsoft.com/azure/foundry/concepts/rbac-foundry" target="_blank" rel="noopener">Foundry RBAC roles</a></div>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <footer>Inspired by the <strong>Foundry Toolkit for VS Code Lab</strong> · <strong>Global AI Construct Mumbai Workshop</strong></footer>
+
+  <script>
+    const agents = [
+      ["Executive Summary Agent", "Converts technical or operational updates into concise business-impact summaries.", "Business"],
+      ["Resume–Job Fit Agent", "Scores a resume against a job description and identifies skill gaps.", "Career"],
+      ["Career Roadmap Agent", "Creates personalized learning plans using Microsoft Learn resources.", "Career"],
+      ["Interview Preparation Agent", "Generates role-specific questions, model answers, and preparation topics.", "Career"],
+      ["Resume Improvement Agent", "Reviews a resume and rewrites weak sections for a target role.", "Career"],
+      ["Job Description Analyzer", "Extracts required skills, experience, certifications, and responsibilities from job postings.", "Career"],
+      ["Candidate Screening Agent", "Ranks multiple candidates against defined and transparent hiring criteria.", "Career"],
+      ["Employee Skill-Gap Agent", "Compares an employee profile with competencies required for a current or future role.", "Career"],
+      ["Certification Advisor Agent", "Recommends Microsoft certifications and learning paths based on career goals.", "Career"],
+      ["Technical Incident Translator", "Turns incident reports and logs into stakeholder-friendly status updates.", "Operations"],
+      ["Post-Incident Review Agent", "Extracts root cause, impact, corrective actions, and owners from incident information.", "Operations"],
+      ["Architecture Review Agent", "Reviews proposed architectures for reliability, security, scalability, and cost concerns.", "Engineering"],
+      ["Azure Solution Recommendation Agent", "Converts business requirements into suggested Azure services and architecture.", "Engineering"],
+      ["Cloud Migration Assessment Agent", "Analyzes existing workloads and creates a phased Azure migration roadmap.", "Engineering"],
+      ["Cost Optimization Agent", "Reviews Azure usage information and recommends practical savings opportunities.", "Operations"],
+      ["Security Review Agent", "Identifies security risks and produces prioritized remediation guidance.", "Engineering"],
+      ["Compliance Readiness Agent", "Maps system information to regulatory or organizational control requirements.", "Operations"],
+      ["Requirements Analysis Agent", "Converts unstructured business requests into functional and non-functional requirements.", "Business"],
+      ["User Story Generator Agent", "Produces user stories, acceptance criteria, dependencies, and edge cases.", "Business"],
+      ["Proposal Evaluation Agent", "Scores vendor or project proposals against a weighted evaluation framework.", "Business"],
+      ["RFP Response Agent", "Analyzes RFP requirements and prepares structured, evidence-based responses.", "Business"],
+      ["Document Comparison Agent", "Compares policies, contracts, designs, or specifications and highlights differences.", "Knowledge"],
+      ["Policy Simplification Agent", "Rewrites complex organizational policies into clear employee guidance.", "Knowledge"],
+      ["Meeting-to-Action Agent", "Converts meeting notes into decisions, action items, owners, and deadlines.", "Operations"],
+      ["Project Health Agent", "Reviews project updates and identifies schedule, dependency, budget, and delivery risks.", "Operations"],
+      ["Release Readiness Agent", "Evaluates test results, incidents, approvals, and known issues before deployment.", "Engineering"],
+      ["Customer Support Triage Agent", "Classifies support requests, assesses urgency, and recommends the next action.", "Operations"],
+      ["Customer Email Response Agent", "Detects intent, retrieves supporting information, and drafts a grounded response.", "Business"],
+      ["Knowledge Research Agent", "Searches approved MCP or enterprise sources and produces a cited answer.", "Knowledge"],
+      ["Documentation Agent", "Converts source material or code changes into structured technical documentation.", "Knowledge"],
+      ["Code Review Workflow Agent", "Uses specialist agents for correctness, security, performance, and final review.", "Engineering"],
+      ["Test Planning Agent", "Generates unit, integration, performance, and edge-case tests from requirements.", "Engineering"],
+      ["Bug Triage Agent", "Classifies defects, estimates severity, identifies ownership, and suggests investigation steps.", "Engineering"],
+      ["Sales Opportunity Qualification Agent", "Scores opportunities based on customer need, budget, authority, timing, and fit.", "Business"],
+      ["Customer Engagement Planner", "Analyzes account context and recommends meetings, workshops, demos, and follow-up actions.", "Business"],
+      ["Product Feedback Analyzer", "Groups customer feedback into themes, sentiment, urgency, and roadmap opportunities.", "Business"],
+      ["Learning Content Curator", "Builds role-based curricula using Microsoft Learn through an MCP integration.", "Knowledge"],
+      ["Research-to-Executive-Brief Workflow", "Combines research, fact-checking, risk analysis, and summarization specialists.", "Knowledge"],
+      ["Business Case Builder", "Converts an initiative into benefits, costs, risks, assumptions, and measurable outcomes.", "Business"],
+      ["Decision Support Agent", "Compares options using weighted criteria and produces a transparent recommendation.", "Business"]
+    ];
+
+    const agentPlans = {
+      "Executive Summary Agent": ["Sequential multi-agent", "Update Analyst|Business Impact Analyst|Executive Brief Writer", "No tool for the first build|Optional approved document search", "Paste a weekly engineering update with milestones, risks, metrics, and decisions needed.", "A one-page executive brief with outcomes, business impact, risks, decisions, and next actions."],
+      "Resume–Job Fit Agent": ["Sequential multi-agent", "Resume Parser|Job Description Analyst|Matching Agent|Gap Analyzer", "Microsoft Learn MCP|Optional document text extractor", "Paste a sample resume followed by a target job description.", "A fit score out of 100, matched evidence, missing skills, and a cited learning roadmap."],
+      "Career Roadmap Agent": ["Sequential multi-agent", "Profile Analyst|Goal Interpreter|Gap Mapper|Curriculum Curator", "Microsoft Learn MCP", "I am a Python developer who wants to become an Azure AI Engineer in 12 months.", "A phased roadmap with milestones, projects, certifications, and Microsoft Learn resources."],
+      "Interview Preparation Agent": ["Sequential multi-agent", "Role Analyst|Question Designer|Interview Coach|Feedback Reviewer", "Optional Microsoft Learn MCP", "Prepare me for a senior cloud engineer interview focused on Azure, Kubernetes, and Terraform.", "A role-specific interview plan, question bank, answer rubric, practice round, and improvement feedback."],
+      "Resume Improvement Agent": ["Sequential multi-agent", "Resume Parser|Evidence Critic|Role Alignment Editor|Quality Reviewer", "Optional document text extractor", "Paste a sample resume and a target role, then request an evidence-based rewrite.", "A revised resume, change log, missing-evidence warnings, and role-alignment checklist."],
+      "Job Description Analyzer": ["Focused hosted agent", "Job Description Analyst", "No external tool for the first build", "Paste a cloud engineer job description containing requirements, preferences, and responsibilities.", "Structured required skills, preferred skills, experience, certifications, responsibilities, and ambiguous wording."],
+      "Candidate Screening Agent": ["Sequential multi-agent", "Criteria Normalizer|Candidate Evidence Extractor|Scoring Agent|Fairness Reviewer", "Optional document text extractor", "Provide a scoring rubric and three fictional candidate profiles with personal details removed.", "Transparent candidate scores, evidence citations, uncertainty flags, and a human-review recommendation."],
+      "Employee Skill-Gap Agent": ["Sequential multi-agent", "Profile Analyst|Role Competency Analyst|Gap Scorer|Development Planner", "Microsoft Learn MCP|Optional HR skills catalog tool", "Compare a fictional employee skill profile with a target platform engineering role.", "Prioritized skill gaps, evidence, readiness score, and a development plan."],
+      "Certification Advisor Agent": ["Sequential multi-agent", "Goal Analyst|Certification Mapper|Prerequisite Checker|Study Planner", "Microsoft Learn MCP", "I support Azure infrastructure and want a certification path toward solutions architecture.", "A recommended certification sequence, prerequisites, study schedule, and official learning links."],
+      "Technical Incident Translator": ["Sequential multi-agent", "Incident Parser|Impact Analyst|Stakeholder Communications Writer", "Optional incident API tool", "Paste a fictional technical incident timeline with errors, impact, mitigation, and current status.", "A plain-language customer or executive update with impact, status, mitigation, and next update time."],
+      "Post-Incident Review Agent": ["Sequential multi-agent", "Timeline Reconstructor|Root Cause Analyst|Action Planner|Review Editor", "Optional incident and work-item tools", "Paste a sanitized incident timeline, alerts, actions, and recovery notes.", "A blameless PIR with timeline, contributing factors, root cause, actions, owners, and due dates."],
+      "Architecture Review Agent": ["Sequential multi-agent", "Requirements Reader|Reliability Reviewer|Security Reviewer|Cost and Scale Reviewer|Lead Architect", "Azure documentation MCP|Optional diagram parser", "Describe a public web application architecture, traffic, data sensitivity, RTO, and RPO.", "Findings by severity across reliability, security, performance, cost, and operational excellence."],
+      "Azure Solution Recommendation Agent": ["Sequential multi-agent", "Requirements Analyst|Service Mapper|Architecture Designer|Decision Reviewer", "Azure documentation MCP|Optional pricing tool", "Describe a workload, expected traffic, data needs, compliance constraints, budget, RTO, and RPO.", "Recommended Azure services, architecture flow, trade-offs, assumptions, and next validation steps."],
+      "Cloud Migration Assessment Agent": ["Sequential multi-agent", "Estate Assessor|Dependency Analyst|Migration Strategist|Wave Planner", "Azure documentation MCP|Optional inventory API", "Provide a fictional workload inventory with servers, databases, dependencies, SLAs, and constraints.", "A 6R disposition, dependency risks, migration waves, landing-zone needs, and validation plan."],
+      "Cost Optimization Agent": ["Sequential multi-agent", "Usage Analyst|Waste Detector|Savings Estimator|Risk Reviewer", "Azure Cost Management tool|Azure Advisor tool", "Provide sanitized monthly cost and utilization data for several Azure resources.", "Ranked savings opportunities with evidence, estimated impact, risk, and implementation sequence."],
+      "Security Review Agent": ["Sequential multi-agent", "Asset and Threat Analyst|Identity Reviewer|Data Protection Reviewer|Remediation Planner", "Azure documentation MCP|Optional Defender findings tool", "Describe a fictional application architecture, identities, data flows, network boundaries, and secrets handling.", "Prioritized security findings with threat, evidence, severity, remediation, and verification steps."],
+      "Compliance Readiness Agent": ["Sequential multi-agent", "Scope Analyst|Control Mapper|Evidence Reviewer|Remediation Planner", "Approved policy knowledge source|Optional evidence repository tool", "Provide a fictional system description and a small approved control set.", "A control-to-evidence matrix, gaps, owners, remediation actions, and human sign-off points."],
+      "Requirements Analysis Agent": ["Sequential multi-agent", "Request Parser|Stakeholder Needs Analyst|Requirements Writer|Ambiguity Reviewer", "No external tool for the first build", "Paste an unstructured request for a customer self-service portal.", "Functional and non-functional requirements, assumptions, constraints, questions, and acceptance boundaries."],
+      "User Story Generator Agent": ["Sequential multi-agent", "Requirement Interpreter|Story Writer|Acceptance Criteria Reviewer|Dependency Analyst", "Optional work-item creation tool", "Provide three product requirements for a customer notification feature.", "Prioritized user stories with acceptance criteria, edge cases, dependencies, and test notes."],
+      "Proposal Evaluation Agent": ["Sequential multi-agent", "Criteria Normalizer|Proposal Evidence Extractor|Weighted Scorer|Risk Reviewer", "Optional document text extractor", "Provide a weighted rubric and two fictional vendor proposals.", "Evidence-backed weighted scores, missing information, risks, sensitivity notes, and a human decision summary."],
+      "RFP Response Agent": ["Sequential multi-agent", "Requirement Extractor|Evidence Retriever|Response Drafter|Compliance Reviewer", "Approved enterprise search|Optional document text extractor", "Provide a short fictional RFP and an approved company capability sheet.", "A requirement matrix, grounded draft responses, evidence references, assumptions, and unresolved questions."],
+      "Document Comparison Agent": ["Sequential multi-agent", "Document Parser|Semantic Difference Analyst|Risk Classifier|Comparison Editor", "Document text extractor", "Provide two short versions of a fictional policy or specification.", "A section-by-section change table, additions, removals, meaning changes, and risk flags."],
+      "Policy Simplification Agent": ["Sequential multi-agent", "Policy Parser|Plain-Language Rewriter|Accuracy Reviewer", "Approved policy knowledge source", "Paste a fictional leave or information-security policy.", "A plain-language version, employee actions, examples, exceptions, and links back to source sections."],
+      "Meeting-to-Action Agent": ["Sequential multi-agent", "Transcript Cleaner|Decision Extractor|Action Planner|Meeting Summary Editor", "Optional calendar and work-item tools", "Paste fictional meeting notes containing decisions, actions, owners, and dates.", "A concise summary, decisions, action register, owners, deadlines, blockers, and open questions."],
+      "Project Health Agent": ["Sequential multi-agent", "Status Parser|Schedule and Dependency Analyst|Risk Scorer|Steering Summary Writer", "Optional work-item and project API", "Provide a fictional project update with milestones, budget, risks, dependencies, and staffing.", "A red-amber-green assessment, evidence, trend, top risks, decisions needed, and recovery actions."],
+      "Release Readiness Agent": ["Sequential multi-agent", "Evidence Collector|Quality Gate Reviewer|Operational Readiness Reviewer|Go-No-Go Synthesizer", "Optional CI/CD, work-item, and incident tools", "Provide fictional test results, open defects, approvals, rollback plan, and release notes.", "A gate-by-gate readiness result, blockers, accepted risks, rollback checks, and human go/no-go recommendation."],
+      "Customer Support Triage Agent": ["Sequential multi-agent", "Intent Classifier|Urgency Assessor|Knowledge Resolver|Routing Agent", "Approved support knowledge source|Optional ticket API", "Submit a fictional customer ticket about repeated sign-in failures after an update.", "Intent, severity, sentiment, suggested resolution, escalation triggers, and destination queue."],
+      "Customer Email Response Agent": ["Sequential multi-agent", "Intent Detector|Grounding Agent|Reply Drafter|Policy Reviewer", "Approved enterprise search|Optional email tool with human approval", "Paste a fictional customer email asking about a delayed service request.", "A grounded draft reply with cited facts, uncertainty flags, tone check, and mandatory human approval."],
+      "Knowledge Research Agent": ["Sequential multi-agent", "Question Planner|Source Researcher|Fact Checker|Citation Editor", "Approved MCP or enterprise search", "Ask a bounded research question against an approved set of sources.", "A concise answer with claims mapped to citations, source quality notes, and unresolved uncertainty."],
+      "Documentation Agent": ["Sequential multi-agent", "Change Analyzer|Documentation Writer|Technical Reviewer", "Repository read tool|Optional work-item context tool", "Provide a fictional code change summary and the existing README section.", "Updated documentation, examples, prerequisites, compatibility notes, and a review checklist."],
+      "Code Review Workflow Agent": ["Sequential multi-agent", "Correctness Reviewer|Security Reviewer|Performance Reviewer|Lead Review Synthesizer", "Repository read tool|Optional static-analysis tool", "Provide a small fictional pull-request diff with its requirements and tests.", "Deduplicated findings by severity with file evidence, impact, fix guidance, and missing tests."],
+      "Test Planning Agent": ["Sequential multi-agent", "Requirement Analyzer|Unit Test Designer|Integration Test Designer|Edge-Case Reviewer", "Optional repository read tool", "Provide requirements for a password reset API and its constraints.", "A traceable test matrix covering positive, negative, integration, security, performance, and edge cases."],
+      "Bug Triage Agent": ["Sequential multi-agent", "Bug Report Parser|Severity Assessor|Ownership Router|Investigation Planner", "Optional issue tracker and logs tools", "Provide a fictional bug report, reproduction steps, logs, environment, and user impact.", "Normalized defect, severity and priority rationale, likely owner, duplicates to check, and investigation steps."],
+      "Sales Opportunity Qualification Agent": ["Sequential multi-agent", "Need Analyst|Qualification Scorer|Risk Reviewer|Next-Step Planner", "Optional CRM read tool", "Provide a fictional opportunity with need, stakeholders, budget, timing, competition, and technical fit.", "A transparent qualification score, evidence, gaps, risks, and recommended next actions."],
+      "Customer Engagement Planner": ["Sequential multi-agent", "Account Context Analyst|Stakeholder Mapper|Engagement Designer|Plan Reviewer", "Optional CRM and calendar tools", "Provide a fictional account summary, priorities, stakeholders, recent meetings, and open opportunities.", "A 30-60-90 day engagement plan with objectives, sessions, owners, evidence, and success measures."],
+      "Product Feedback Analyzer": ["Sequential multi-agent", "Feedback Cleaner|Theme and Sentiment Analyst|Impact Prioritizer|Insights Writer", "Optional feedback store tool", "Provide 15 fictional feedback comments with channel, product area, and customer segment.", "Themes, sentiment, frequency, affected segments, representative evidence, and prioritized opportunities."],
+      "Learning Content Curator": ["Sequential multi-agent", "Learner Profile Analyst|Curriculum Designer|Resource Curator|Quality Reviewer", "Microsoft Learn MCP", "Create a six-week learning path for a .NET developer moving to Azure application development.", "A sequenced curriculum with outcomes, modules, exercises, checkpoints, and Microsoft Learn links."],
+      "Research-to-Executive-Brief Workflow": ["Sequential multi-agent", "Research Planner|Source Researcher|Fact Checker|Risk Analyst|Executive Brief Writer", "Approved MCP or enterprise search", "Research a bounded technology decision using only the approved sources supplied to the agent.", "A cited executive brief with options, verified facts, risks, recommendation, and confidence level."],
+      "Business Case Builder": ["Sequential multi-agent", "Problem and Baseline Analyst|Benefits Analyst|Cost and Risk Analyst|Business Case Writer", "Optional pricing and finance tools", "Describe a fictional automation initiative with baseline cost, volume, timeline, constraints, and target outcomes.", "An executive business case with assumptions, costs, benefits, risks, KPIs, sensitivity, and recommendation."],
+      "Decision Support Agent": ["Sequential multi-agent", "Decision Framer|Criteria and Evidence Analyst|Weighted Scorer|Challenge Reviewer", "Optional approved research tool", "Provide three fictional options, weighted criteria, constraints, and available evidence.", "A transparent comparison, weighted scores, sensitivity analysis, trade-offs, and a human-owned recommendation."]
+    };
+
+    const grid = document.getElementById("agentGrid");
+    const search = document.getElementById("search");
+    const resultCount = document.getElementById("resultCount");
+    const emptyState = document.getElementById("emptyState");
+    const filters = [...document.querySelectorAll(".filter")];
+    let activeCategory = "All";
+
+    function renderAgents() {
+      grid.innerHTML = agents.map(([name, description, category], index) => `
+        <button class="agent-card" type="button" data-index="${index}" data-category="${category}" data-search="${(name + " " + description).toLowerCase()}" aria-label="Open build steps for ${name}" style="animation-delay:${Math.min(index * 18, 280)}ms">
+          <div class="card-top">
+            <span class="agent-number">${String(index + 1).padStart(2, "0")}</span>
+            <span class="badge">${category}</span>
+          </div>
+          <h3>${name}</h3>
+          <p>${description}</p>
+          <span class="card-action">View build steps →</span>
+        </button>
+      `).join("");
+    }
+
+    const buildPanel = document.getElementById("buildPanel");
+    const buildTab = document.getElementById("buildTab");
+    let selectedAgentIndex = 1;
+
+    function slugify(value) {
+      return value.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+    }
+
+    function renderGuide(index) {
+      selectedAgentIndex = index;
+      const [name, description, category] = agents[index];
+      const [pattern, specialistText, toolText, sampleInput, expectedOutput] = agentPlans[name];
+      const specialists = specialistText.split("|");
+      const tools = toolText.split("|");
+      const repoFolder = pattern === "Focused hosted agent" ? "workshop\\lab01-single-agent" : "workshop\\lab02-multi-agent\\PersonalCareerCopilot";
+      const flow = specialists.map((specialist, position) => `<div class="workflow-node"><strong>${position + 1}. ${specialist}</strong><span>${position === specialists.length - 1 ? "Produces and quality-checks the final response." : "Produces structured evidence for the next specialist."}</span></div>`).join("");
+      const specialistChecklist = specialists.map(specialist => `<li>${specialist}</li>`).join("");
+      const toolChecklist = tools.map(tool => `<li>${tool}</li>`).join("");
+      const prompt = `You are the ${name}.\nGoal: ${description}\nUse only the information supplied by the user or returned by approved tools.\nDo not invent evidence. State assumptions and uncertainty.\nReturn: ${expectedOutput}`;
+
+      buildTab.textContent = `Build: ${name}`;
+      buildPanel.innerHTML = `
+        <div class="guide-intro"><div><p class="section-kicker">Idea ${String(index + 1).padStart(2, "0")} · ${category}</p><h2>${name}</h2><p>${description} Follow this beginner path using your Azure subscription and the workshop repository.</p></div><div class="guide-facts" aria-label="Guide summary"><div class="guide-fact"><strong>${specialists.length}</strong><span>Specialist ${specialists.length === 1 ? "agent" : "agents"}</span></div><div class="guide-fact"><strong>~2 hours</strong><span>Beginner build</span></div><div class="guide-fact"><strong>${pattern === "Focused hosted agent" ? "Single" : "Workflow"}</strong><span>${pattern}</span></div><div class="guide-fact"><strong>${tools.length}</strong><span>Tool option${tools.length === 1 ? "" : "s"}</span></div></div></div>
+        <div class="notice danger"><strong>Safety first:</strong> Use fictional or sanitized data. Keep human approval for hiring, security, compliance, financial, customer communication, and go/no-go decisions. Hosted Agents are preview and can create Azure charges.</div>
+
+        <section class="guide-block"><div class="guide-block-head"><span class="step-number">01</span><div><h3>Choose the architecture</h3><p>Use the <strong>${pattern}</strong> pattern. Keep each specialist focused and pass structured output to the next step.</p></div></div><div class="guide-body"><div class="workflow-strip">${flow}</div><h4>Expected result</h4><p>${expectedOutput}</p></div></section>
+
+        <section class="guide-block"><div class="guide-block-head"><span class="step-number">02</span><div><h3>Install the prerequisites</h3><p>Install these before starting the workshop timer.</p></div></div><div class="guide-body"><ul class="check-grid"><li>Latest Visual Studio Code</li><li>Git</li><li>Python 3.13 recommended</li><li>Azure CLI 2.80 or later</li><li>Foundry Toolkit for VS Code</li><li>Python extension for VS Code</li></ul><pre class="code-block">git --version\npython --version\naz --version</pre></div></section>
+
+        <section class="guide-block"><div class="guide-block-head"><span class="step-number">03</span><div><h3>Clone the workshop reference</h3><p>Start from the nearest working lab and adapt its instructions and workflow.</p></div></div><div class="guide-body"><pre class="code-block">git clone https://github.com/microsoft-foundry/Foundry_Toolkit_for_VSCode_Lab.git\ncd Foundry_Toolkit_for_VSCode_Lab\\${repoFolder}\ncode .</pre><p>Keep the hosting, authentication, and Responses protocol code. Replace the sample agent names and instructions with the blueprint below.</p></div></section>
+
+        <section class="guide-block"><div class="guide-block-head"><span class="step-number">04</span><div><h3>Sign in to Azure</h3><p>Select the subscription that will own the workshop resources.</p></div></div><div class="guide-body"><pre class="code-block">az login\naz account list --output table\naz account set --subscription "&lt;subscription name or ID&gt;"\naz account show --query "{name:name, id:id}" --output table</pre></div></section>
+
+        <section class="guide-block"><div class="guide-block-head"><span class="step-number">05</span><div><h3>Create the Foundry project and model</h3><p>Use the Toolkit to create the cloud project and one available chat model deployment.</p></div></div><div class="guide-body"><ol><li>Run <strong>Foundry Toolkit: Create Project</strong>.</li><li>Select your subscription, a dedicated resource group, and a supported region.</li><li>Open the Model Catalog and deploy an available small chat-capable model.</li><li>Record the exact project endpoint and model deployment name.</li><li>Verify <strong>Foundry User</strong> for testing and <strong>Foundry Project Manager</strong> or higher for deployment.</li></ol></div></section>
+
+        <section class="guide-block"><div class="guide-block-head"><span class="step-number">06</span><div><h3>Create the Python environment</h3><p>Install the repo's pinned Agent Framework and hosting dependencies.</p></div></div><div class="guide-body"><pre class="code-block">python -m venv .venv\n.\\.venv\\Scripts\\Activate.ps1\npython -m pip install --upgrade pip\npip install -r requirements.txt</pre><h4>Create .env beside main.py</h4><pre class="code-block">FOUNDRY_PROJECT_ENDPOINT=https://&lt;account&gt;.services.ai.azure.com/api/projects/&lt;project&gt;\nAZURE_AI_MODEL_DEPLOYMENT_NAME=&lt;exact deployment name&gt;</pre></div></section>
+
+        <section class="guide-block"><div class="guide-block-head"><span class="step-number">07</span><div><h3>Configure the specialists</h3><p>Create one Agent and AgentExecutor for each specialist. For a single-agent pattern, keep only one.</p></div></div><div class="guide-body"><ul class="check-grid">${specialistChecklist}</ul><h4>Starter system instruction</h4><pre class="test-prompt">${prompt}</pre><p>Give intermediate agents a strict JSON or Markdown schema so the next agent receives predictable fields.</p></div></section>
+
+        <section class="guide-block"><div class="guide-block-head"><span class="step-number">08</span><div><h3>Add only the tools you need</h3><p>Build the prompt-only version first. Add read-only grounding, then write actions with explicit human approval.</p></div></div><div class="guide-body"><ul class="check-grid">${toolChecklist}</ul><ol><li>Define a narrow tool name, typed inputs, and a small output schema.</li><li>Use managed identity or DefaultAzureCredential; do not store API keys.</li><li>Allow-list approved sources and return citations.</li><li>Log tool calls without storing unnecessary personal or secret data.</li></ol></div></section>
+
+        <section class="guide-block"><div class="guide-block-head"><span class="step-number">09</span><div><h3>Connect and guard the workflow</h3><p>For multiple specialists, connect one straight sequence with WorkflowBuilder.</p></div></div><div class="guide-body"><pre class="code-block">${specialists.join(" → ")}</pre><ul class="check-grid"><li>Pass complete required context forward</li><li>Avoid shortcut edges that duplicate runs</li><li>Require evidence for important claims</li><li>State uncertainty instead of guessing</li><li>Keep final decisions with a human</li><li>Return a stable final schema</li></ul></div></section>
+
+        <section class="guide-block"><div class="guide-block-head"><span class="step-number">10</span><div><h3>Run a local test</h3><p>Press F5, start the local Agent HTTP Server, and open Agent Inspector.</p></div></div><div class="guide-body"><h4>Sample input</h4><pre class="test-prompt">${sampleInput}</pre><h4>Pass conditions</h4><ul class="check-grid"><li>Output matches the requested structure</li><li>Claims are tied to supplied evidence</li><li>Missing data is clearly identified</li><li>Approved tool results include citations</li><li>No secrets or personal data appear in logs</li><li>Only one final response is produced</li></ul></div></section>
+
+        <section class="guide-block"><div class="guide-block-head"><span class="step-number">11</span><div><h3>Deploy and verify</h3><p>Deploy the tested source as one hosted agent and repeat the same test in Playground.</p></div></div><div class="guide-body"><ol><li>Run <strong>Foundry Toolkit: Deploy Hosted Agent</strong>.</li><li>Select the same project and source folder.</li><li>Choose <strong>Code</strong> and <strong>Remote</strong> when available, so local Docker is not required.</li><li>Wait for Active, Started, or Running.</li><li>Open the hosted Playground and submit the same sample.</li></ol><div class="notice"><strong>Expected hosted result:</strong> ${expectedOutput}</div></div></section>
+
+        <section class="guide-block"><div class="guide-block-head"><span class="step-number">12</span><div><h3>Evaluate, improve, and clean up</h3><p>Test more than one happy-path example before demonstrating the agent.</p></div></div><div class="guide-body"><ul class="check-grid"><li>Test a complete input</li><li>Test missing or conflicting information</li><li>Test prompt-injection text in source content</li><li>Check citations and tool failures</li><li>Record quality, latency, and token usage</li><li>Delete unused workshop resources</li></ul><div class="resource-links"><a href="https://github.com/microsoft-foundry/Foundry_Toolkit_for_VSCode_Lab" target="_blank" rel="noopener">Workshop repository</a><a href="https://learn.microsoft.com/azure/foundry/agents/quickstarts/quickstart-hosted-agent" target="_blank" rel="noopener">Hosted Agent quickstart</a><a href="https://learn.microsoft.com/azure/foundry/concepts/rbac-foundry" target="_blank" rel="noopener">Foundry RBAC roles</a></div></div></section>`;
+    }
+
+    function activateTab(tab, updateUrl = true) {
+      pageTabs.forEach(item => item.setAttribute("aria-selected", String(item === tab)));
+      tabPanels.forEach(panel => { panel.hidden = panel.id !== tab.getAttribute("aria-controls"); });
+      if (updateUrl) {
+        const hash = tab === buildTab ? `#build-${slugify(agents[selectedAgentIndex][0])}` : location.pathname;
+        history.replaceState(null, "", hash);
+      }
+    }
+
+    function openAgentGuide(index, scroll = true) {
+      renderGuide(index);
+      activateTab(buildTab);
+      if (scroll) document.querySelector(".page-tabs").scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    function applyFilters() {
+      const query = search.value.trim().toLowerCase();
+      let visible = 0;
+      document.querySelectorAll(".agent-card").forEach(card => {
+        const categoryMatch = activeCategory === "All" || card.dataset.category === activeCategory;
+        const searchMatch = !query || card.dataset.search.includes(query);
+        const show = categoryMatch && searchMatch;
+        card.classList.toggle("hidden", !show);
+        if (show) visible += 1;
+      });
+      resultCount.textContent = `Showing ${visible} ${visible === 1 ? "idea" : "ideas"}`;
+      emptyState.style.display = visible ? "none" : "block";
+    }
+
+    filters.forEach(button => button.addEventListener("click", () => {
+      activeCategory = button.dataset.filter;
+      filters.forEach(item => item.classList.toggle("active", item === button));
+      applyFilters();
+    }));
+
+    search.addEventListener("input", applyFilters);
+
+    grid.addEventListener("click", event => {
+      const card = event.target.closest(".agent-card");
+      if (card) openAgentGuide(Number(card.dataset.index));
+    });
+
+    const pageTabs = [...document.querySelectorAll(".page-tab")];
+    const tabPanels = [...document.querySelectorAll(".tab-panel")];
+
+    renderAgents();
+    renderGuide(selectedAgentIndex);
+
+    pageTabs.forEach(tab => tab.addEventListener("click", () => {
+      activateTab(tab);
+      document.querySelector(".page-tabs").scrollIntoView({ behavior: "smooth", block: "start" });
+    }));
+
+    if (location.hash.startsWith("#build-")) {
+      const requestedSlug = location.hash.replace("#build-", "");
+      const requestedIndex = agents.findIndex(([name]) => slugify(name) === requestedSlug);
+      openAgentGuide(requestedIndex >= 0 ? requestedIndex : 1, false);
+    } else if (location.hash === "#build-guide") {
+      openAgentGuide(1, false);
+    }
+  </script>
+</body>
+</html>
